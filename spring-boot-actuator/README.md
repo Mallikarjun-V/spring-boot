@@ -45,3 +45,9 @@ For Windows machine access the application via docker-machine ip
 
 Access below URL in the browser
 http://<docker-machine-ip>:8080/test
+
+To check the logs
+>> docker logs <container_id>
+
+To get inside the container
+>> docker exec -it <container_id> bash
