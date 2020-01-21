@@ -34,6 +34,9 @@ To stop the container gracefully
 To kill the container immediately
 >> docker kill <container_id>
 
+To start the container
+>> docker start <container_id>
+
 To remove the container
 >> docker rm <container_id>
 
