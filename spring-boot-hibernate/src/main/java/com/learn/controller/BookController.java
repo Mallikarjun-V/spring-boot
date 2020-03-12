@@ -4,6 +4,8 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -26,12 +28,13 @@ public class BookController {
     }
     
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public Book save(@RequestBody Book book) {
+    public ResponseEntity<Book> save(@RequestBody Book book) {
         book.setCreatedDateTime(ZonedDateTime.now());
-        return bookService.save(book);
+        bookService.save(book);
+        return new ResponseEntity<Book>(book, HttpStatus.CREATED);
     }
     
-    @RequestMapping(value = "", method = RequestMethod.GET, params = {"name"})
+    @RequestMapping(value = "", method = RequestMethod.GET, params = { "name" })
     public List<Book> findByName(@RequestParam("name") String name) {
         System.out.println("Finding by name : " + name);
         return bookService.findByName(name);
