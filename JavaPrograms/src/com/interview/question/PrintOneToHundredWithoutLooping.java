@@ -3,6 +3,8 @@ package com.interview.question;
 /**
  * Program to print numbers from 1 o 100 without looping.
  * 
+ * hint: Recusive method
+ * 
  * @author MALLIKARJUN
  *
  */
