@@ -12,7 +12,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import de.codecentric.boot.admin.server.config.AdminServerProperties;
 
-@Profile("insecure")
+@Profile("dev")
 @Configuration(proxyBeanMethods = false)
 public class SecurityPermitAllConfig extends WebSecurityConfigurerAdapter {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SecurityPermitAllConfig.class);
