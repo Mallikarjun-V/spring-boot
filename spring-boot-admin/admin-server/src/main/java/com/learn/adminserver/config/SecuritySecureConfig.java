@@ -17,7 +17,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import de.codecentric.boot.admin.server.config.AdminServerProperties;
 
-@Profile("secure")
+@Profile("prod")
 @Configuration
 public class SecuritySecureConfig extends WebSecurityConfigurerAdapter {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SecuritySecureConfig.class);
