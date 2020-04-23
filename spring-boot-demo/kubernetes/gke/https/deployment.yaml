@@ -1,0 +1,43 @@
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: spring-boot-demo-deployment
+spec:
+  selector:
+    matchLabels:
+      app: spring-boot-demo
+  replicas: 2 # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: spring-boot-demo
+    spec:
+      containers:
+      - name: spring-boot-demo
+        image: gcr.io/$GOOGLE_CLOUD_PROJECT/spring-boot-demo:v1
+        ports:
+        - name: liveness-port
+          containerPort: 8080
+          hostPort: 8080
+        readinessProbe: # The kubelet uses readiness probes to know when a container is ready to start accepting traffic. A Pod is considered ready when all of its containers are ready. One use of this signal is to control which Pods are used as backends for Services. When a Pod is not ready, it is removed from Service load balancers 
+          httpGet:
+            path: /hello
+            port: liveness-port
+		  initialDelaySeconds: 5
+          failureThreshold: 3
+          periodSeconds: 10
+
+        livenessProbe: # The kubelet uses liveness probes to know when to restart a container. For example, liveness probes could catch a deadlock, where an application is running, but unable to make progress. Restarting a container in such a state can help to make the application more available despite bugs.
+          httpGet:
+            path: /hello
+            port: liveness-port
+          failureThreshold: 3
+          periodSeconds: 10
+        # The kubelet uses startup probes to know when a container application has started. If such a probe is configured, it disables liveness and readiness checks until it succeeds, making sure those probes don’t interfere with the application startup.
+        # the application will have a maximum of 5 minutes (30 * 10 = 300s) to finish its startup. Once the startup probe has succeeded once, the liveness probe takes over to provide a fast response to container deadlocks. If the startup probe never succeeds, the container is killed after 300s and subject to the pod’s restartPolicy.
+        startupProbe:
+          httpGet:
+            path: /hello
+            port: liveness-port
+          failureThreshold: 30
+          periodSeconds: 10

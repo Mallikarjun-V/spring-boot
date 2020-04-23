@@ -1,0 +1,113 @@
+Download git project 
+$ git clone https://github.com/Mallikarjun-V/spring-boot.git
+
+$ cd demo
+
+Build the project
+$ ./mvnw -DskipTests package
+
+Run the app locally
+$ ./mvnw -DskipTests spring-boot:run
+
+Once the application started, click on the Web Preview icon in the Cloud Shell toolbar and choose preview on port 8080.
+A tab in your browser opens and connects to the server you just started.
+
+Enable Google Container Registry to store the container image
+$ gcloud services enable containerregistry.googleapis.com
+
+Create and push docker image to the Google Container Registry
+./mvnw -DskipTests com.google.cloud.tools:jib-maven-plugin:build -Dimage=gcr.io/$GOOGLE_CLOUD_PROJECT/spring-boot-demo:v1
+
+jib maven tool generates docker image.
+gcr.io -> domain for the registry
+$GOOGLE_CLOUD_PROJECT -> current GCP project
+spring-boot-demo:v1 -> image name:version tag
+
+Test the image locally with the following command which will run a Docker container as a daemon on port 8080 from your newly-created container image:
+$ docker run -ti --rm -p 8080:8080 gcr.io/$GOOGLE_CLOUD_PROJECT/spring-boot-demo:v1
+
+Web preview the Application
+
+Create Cluster
+Enable compute engine services
+$ gcloud services enable compute.googleapis.com container.googleapis.com
+
+Create a cluster with two n1-standard-1 nodes
+$ gcloud container clusters create spring-boot-demo-cluster \
+  --num-nodes 2 \
+  --machine-type n1-standard-1 \
+  --zone us-central1-c
+
+Get authentication credentials for the cluster
+
+After creating your cluster, you need to get authentication credentials to interact with the cluster:
+
+$ gcloud container clusters get-credentials cluster-name
+e.g 
+$ gcloud container clusters get-credentials spring-boot-demo-cluster
+This command configures kubectl to use the cluster you created.
+
+Deploy application to Kubernetes
+A Kubernetes deployment can create, manage, and scale multiple instances of your application using the container image.
+Let's deploy one instance of your application into Kubernetes using the kubectl run command:
+$ kubectl create deployment spring-boot-demo --image=gcr.io/$GOOGLE_CLOUD_PROJECT/spring-boot-demo:v1
+
+To view the deployment
+$ kubectl get deployments
+
+To view the application instances created by the deployment
+$ kubectl get pods
+
+At this point you should have your container running under the control of Kubernetes but you still have to make it accessible to the outside world.
+
+Allow external traffic
+By default, the pod is only accessible by its internal IP within the cluster. In order to make the spring-boot-admin-serevr container accessible from outside the kubernetes virtual network, you have to expose the pod as a kubernetes service.
+
+From Cloud Shell you can expose the pod to the public internet with the kubectl expose command combined with the --type=LoadBalancer flag. This flag is required for the creation of an externally accessible IP :
+$ kubectl create service loadbalancer spring-boot-demo --tcp=8080:8080
+
+To find the publicly-accessible IP address of the service, simply request kubectl to list all the cluster services:
+$ kubectl get services
+
+The EXTERNAL-IP may take several minutes to become available and visible. If the EXTERNAL-IP is missing, wait a few minutes and try again.
+You should now be able to reach the service by pointing your browser to this address: 
+http://<EXTERNAL_IP>:8080
+
+Scale up Application
+Simply tell the replication controller to manage a new number of replicas for your application instances:
+$ kubectl scale deployment spring-boot-demo --replicas=3
+
+Note the declarative approach here - rather than starting or stopping new instances you declare how many instances should be running at all time. Kubernetes reconciliation loops simply make sure the reality matches what you requested and takes action if needed.
+
+Roll out an upgrade
+Use Jib to build and push a new version of the container image:
+$ ./mvn -DskipTests package \
+  com.google.cloud.tools:jib-maven-plugin:build \
+  -Dimage=gcr.io/$GOOGLE_CLOUD_PROJECT/spring-boot-demo:v2
+
+You're now ready for Kubernetes to smoothly update your replication controller to the new version of the application. In order to change the image label for your running container, you need to edit the existing hello-java deployment and change the image from gcr.io/PROJECT_ID/spring-boot-demo:v1 to gcr.io/PROJECT_ID/spring-boot-demo:v2.
+
+use kubectl set image command to ask Kubernetes to deploy the new version of your application across the entire cluster one instance at a time with rolling update:
+$ kubectl set image deployment/spring-boot-demo spring-boot-demo=gcr.io/$GOOGLE_CLOUD_PROJECT/spring-boot-demo:v2
+
+Roll back
+Oops - did you make a mistake with a new version of the application? Perhaps the new version contained an error and you need to rollback quickly. With Kubernetes, you can roll back to the previous state easily. Let's rollback the application by running:
+$ kubectl rollout undo deployment/spring-boot-demo
+
+Auto Scale
+kubectl autoscale deployment spring-boot-demo --min=5 --max=9 --cpu-percent=80
+
+Federation?
+Mechanism for managing applications and services in multiple Kubernetes clusters tracked by the Kubernetes cluster registry.
+
+or 
+
+K8s Federation v2 is a powerful mechanism that can deploy and manage applications and services in a multi-cluster environment.
+
+To have a working federation control plane, it is required to have the cluster registry installed. Cluster registry is a tool that stores a list of clusters and the configuration required to access those clusters. Once a cluster is known to the registry, it is possible to add that cluster to the federation.
+
+
+
+
+
+

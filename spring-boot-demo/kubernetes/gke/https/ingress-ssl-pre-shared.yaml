@@ -1,0 +1,12 @@
+apiVersion: "extensions/v1beta1"
+kind: "Ingress"
+metadata:
+  name: "spring-boot-demo-ingress"
+  namespace: "default"
+  annotaions:
+	kubernetes.io/ingress.global-static-ip-name: "spring-boot-demo-static-ip"
+	ingress.gcp.kubernetes.io/pre-shared-cert: "spring-boot-demo-ssl"
+spec:
+  backend:
+    serviceName: "spring-boot-demo-service"
+    servicePort: 8080

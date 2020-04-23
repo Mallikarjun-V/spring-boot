@@ -1,0 +1,9 @@
+apiVersion: "extensions/v1beta1"
+kind: "Ingress"
+metadata:
+  name: "spring-boot-demo-ingress"
+  namespace: "default"
+spec:
+  backend:
+    serviceName: "spring-boot-demo-service"
+    servicePort: 8080
