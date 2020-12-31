@@ -1,0 +1,13 @@
+spring.application.name: DB Service
+
+# server configuration
+server:
+   port: 8080
+   #servlet.contextPath: /db-service
+
+# mongoDB configuration
+spring.data.mongodb:
+   database: demo
+   host: mongodb
+   port: 27017
+   autoIndexCreation: true

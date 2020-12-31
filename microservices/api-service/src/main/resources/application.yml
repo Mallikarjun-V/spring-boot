@@ -1,0 +1,9 @@
+spring.application.name: API Service
+
+# server configuration
+server:
+   port: 8080
+   servlet.contextPath: /api
+
+# DB service configuration
+app.db-service.host: db-service
