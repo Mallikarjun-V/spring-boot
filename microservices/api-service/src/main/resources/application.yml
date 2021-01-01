@@ -6,4 +6,4 @@ server:
    servlet.contextPath: /api
 
 # DB service configuration
-app.db-service.host: db-service
+app.db-service.host: db-service:8080
