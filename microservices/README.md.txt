@@ -16,7 +16,7 @@ $ docker run -d -p 27017:27017 --network backend -v ~/mongo/data:/data/db --name
 
 $ docker run -d -p 8080:8080 --network backend --name db-service db-service:latest
 
-$ docker run -d -p 8080:8080 --network backend --name api-service api-service:latest
+$ docker run -d -p 8081:8080 --network backend --name api-service api-service:latest
 
 # check logs of the container
 $ docker logs api-service
@@ -35,5 +35,7 @@ $ db.users.find()
 #to check the network/volume of the container
 docker inspect container api-service
 
+Test API
+curl http://host:8081/api/users
 
 Microservices are can communitae through conatiner names if connected to the same bridge network
