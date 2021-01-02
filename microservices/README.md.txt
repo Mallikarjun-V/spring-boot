@@ -38,4 +38,11 @@ docker inspect container api-service
 Test API
 curl http://host:8081/api/users
 
-Microservices are can communitae through conatiner names if connected to the same bridge network
+Microservices can communicate through conatiner names if connected to the same bridge network.
+
+#to check memory and CPU usage 
+$ docker stats
+# shows stats for all the containers
+
+$ docker stats api-service
+#shows memory stats by conetainer name : api-service
