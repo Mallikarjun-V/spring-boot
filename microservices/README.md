@@ -8,6 +8,7 @@ Build the project
 $ mvn -DskipTests package
 
 $ docker build -t mallu33378/user-service:latest ./user-service/
+
 $ docker build -t mallu33378/api-service:latest ./api-service/
 
 ##### create network called backend with driver bridge
