@@ -14,7 +14,8 @@ $ docker network create backend
 $ docker pull mongo:latest
 $ docker run -d -p 27017:27017 --network backend -v ~/mongo/data:/data/db --name mongodb mongo:latest
 
-$ docker run -d -p 8080:8080 --network backend --name db-service db-service:latest
+# evvironment variable MONGO_HOST property is the name of the mongo container, so that db-service can communicate to mongoDB container
+$ docker run -d -p 8080:8080 --network backend -e MONGO_HOST=mongodb --name db-service db-service:latest
 
 $ docker run -d -p 8081:8080 --network backend --name api-service api-service:latest
 
