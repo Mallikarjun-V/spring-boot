@@ -57,4 +57,6 @@ $ kubectl top pod
 $ kubectl top node
 
 
+# Pods within a cluster can talk to each other through the names of the Services exposing them.
 
+# Kubernetes has an internal DNS system that keeps track of domain names and IP addresses.
