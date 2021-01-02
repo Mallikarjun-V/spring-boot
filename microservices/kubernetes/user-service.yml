@@ -1,0 +1,37 @@
+# Deployment YAML definition
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-service
+  template:
+    metadata:
+      labels:
+        app: user-service
+    spec:
+      containers:
+        - name: user-app
+          image: user-service:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: MONGO_HOST
+              value: mongodb
+          imagePullPolicy: Always
+---
+# Service YAML definition
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service
+spec:
+  selector:
+    app: user-service
+  ports:
+    - port: 80
+      targetPort: 8080
+  type: LoadBalancer
