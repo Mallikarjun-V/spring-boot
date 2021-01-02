@@ -1,4 +1,4 @@
-# Deployment on Docker Containers (User-service with mongoDB)
+# Deployment using Docker Containers (User-service with mongoDB)
 
 $ git clone https://github.com/Mallikarjun-V/spring-boot.git
 
