@@ -5,9 +5,9 @@ server:
    port: 8080
    #servlet.contextPath: /db-service
 
-# mongoDB configuration
+# mongoDB configuration, host to be set dynamically while running app - default set to localhost
 spring.data.mongodb:
    database: demo
-   host: mongodb
+   host: ${MONGO_HOST:localhost}
    port: 27017
    autoIndexCreation: true
